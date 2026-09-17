@@ -1,11 +1,43 @@
 {% extends 'base.html' %}
+
 {% block conteudo %}
 <h1>Acervo</h1>
+
+<form method="get">
+    <input type="text" name="nome" placeholder="Buscar por título..." value="{{ filtros.nome }}">
+
+    <select name="tipo">
+        <option value="">Todos os Tipos</option>
+        {% for chave, valor in tipos %}
+            <option value="{{ chave }}" {% if filtros.tipo == chave %}selected{% endif %}>{{ valor }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="categoria">
+        <option value="">Todas as Categorias</option>
+        {% for chave, valor in categorias %}
+            <option value="{{ chave }}" {% if filtros.categoria == chave %}selected{% endif %}>{{ valor }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Pesquisar</button>
+    <a href="{% url 'lista' %}">Limpar</a>
+</form>
+
+<hr>
+
 <ul>
-    {% for livro in livros %}
-        <li>{{ livro.titulo }} — {{ livro.autor }}</li>
-    {% empty %}
-        <li>Nenhum livro cadastrado.</li>
-    {% endfor %}
+{% for livro in livros %}
+    <li>
+        <strong>{{ livro.titulo }}</strong> - {{ livro.autor }} ({{ livro.ano }}) | 
+        <em>[{{ livro.get_tipo_display }}]</em> | 
+        <span>Cat: {{ livro.get_categoria_display }}</span>
+    </li>
+{% empty %}
+    <li>Nenhum livro encontrado.</li>
+{% endfor %}
 </ul>
+
+<br>
+<a href="{% url 'novo_livro' %}">+ Cadastrar Novo Livro</a>
 {% endblock %}
